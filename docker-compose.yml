@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  # ----------------------------------
+  # 1. Database Service (MariaDB)
+  # ----------------------------------
+  db:
+    image: mariadb:10.4
+    container_name: sqli-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: security
+      MYSQL_USER: aio
+      MYSQL_PASSWORD: toor
+    volumes:
+      - ./sql-connections/sql-config/:/docker-entrypoint-initdb.d/
+    platform: linux/amd64
+
+  # ----------------------------------
+  # 2. Web Server Service (Apache/PHP)
+  # ----------------------------------
+  web:
+    build: . 
+    container_name: sqli-web
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html/
+    depends_on:
+      - db
+    command: ["/bin/bash", "-c", "while ! timeout 1 bash -c 'cat < /dev/null > /dev/tcp/db/3306'; do echo waiting for db; sleep 2; done; apache2-foreground"]
+
+
+  tomcat:
+    build:
+      context: ./tomcat-waf 
+      dockerfile: Dockerfile.tomcat 
+    container_name: waf-tomcat
+    ports:
+      - "8080:8080" 
+    depends_on:
+      - db
