@@ -43,7 +43,7 @@ git clone https://github.com/KhitMinnyo/sqli-labs.git
 cd sqli-labs
 docker-compose up -d --build 
 ```
-Once docker-compose up is finished, your labs are ready. You can access it http://localhost/ . 
+Once docker-compose up is finished, your labs are ready. You can access it on http://localhost/ . 
 
 ### Database Initialization
 
