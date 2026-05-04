@@ -58,3 +58,6 @@ User Name:dumbPassword:dumb
 User Name:dumbPassword:dumb
 User Name:aPassword:b
 User Name:dumbPassword:dumb
+User Name:admin'Password:admin
+User Name:admin'Password:admin
+User Name:'Password:

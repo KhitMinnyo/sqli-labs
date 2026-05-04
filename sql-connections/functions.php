@@ -86,7 +86,11 @@ function view_attempts()
 	$table = table_name();
 	$sql="SELECT tryy FROM $table WHERE id=1";
 	$result=mysqli_query($con1, $sql) ;
-	$row = mysqli_fetch_array($result, MYSQLI_BOTH);
+	if($result) {
+	    $row = mysqli_fetch_array($result, MYSQLI_BOTH);
+	} else {
+	    $row = null;
+	}
 	if(!$row)
 	die("error in function view_attempts()". mysqli_error($con1));
 	else

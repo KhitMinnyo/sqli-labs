@@ -58,7 +58,11 @@ if(isset($_POST['uname']) && isset($_POST['passwd']))
 	$passwd='"'.$passwd.'"'; 
 	@$sql="SELECT username, password FROM users WHERE username=($uname) and password=($passwd) LIMIT 0,1";
 	$result=mysqli_query($con1, $sql);
-	$row = mysqli_fetch_array($result, MYSQLI_BOTH);
+	if($result) {
+	    $row = mysqli_fetch_array($result, MYSQLI_BOTH);
+	} else {
+	    $row = null;
+	}
 
 	if($row)
 	{

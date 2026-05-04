@@ -38,7 +38,11 @@ if(isset($_GET['id']))
 // connectivity 
 	$sql="SELECT * FROM users WHERE id=($id) LIMIT 0,1";
 	$result=mysqli_query($con1, $sql);
-	$row = mysqli_fetch_array($result, MYSQLI_BOTH);
+	if($result) {
+	    $row = mysqli_fetch_array($result, MYSQLI_BOTH);
+	} else {
+	    $row = null;
+	}
 	if($row)
 	{
 	  	echo "<font size='5' color= '#99FF00'>";	

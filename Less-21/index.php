@@ -81,7 +81,11 @@ if(!isset($_COOKIE['uname']))
 
 		$sql="SELECT  users.username, users.password FROM users WHERE users.username=$uname and users.password=$passwd ORDER BY users.id DESC LIMIT 0,1";
 		$result1 = mysqli_query($con1, $sql);
-		$row1 = mysqli_fetch_array($result1, MYSQLI_BOTH);
+		if($result1) {
+		    $row1 = mysqli_fetch_array($result1, MYSQLI_BOTH);
+		} else {
+		    $row1 = null;
+		}
 		if($row1)
 		{
 			echo '<font color= "#FFFF00" font size = 3 >';

