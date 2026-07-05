@@ -1,4 +1,10 @@
-FROM tomcat:9.0-jdk11-openjdk
+# The old `tomcat:9.0-jdk11-openjdk` image (deprecated) bundles a JDK 11 build
+# with a cgroup-v2 bug: on modern Linux hosts (Kali) that use cgroup v2, the JVM
+# throws NullPointerException in CgroupV2Subsystem.getInstance during startup, so
+# Catalina fails to initialise and the container restart-loops. (It "works on
+# Mac" only because Docker Desktop's VM does not expose cgroup v2 the same way.)
+# Temurin JDK 17 has the fix and is multi-arch (amd64 + arm64).
+FROM tomcat:9.0-jdk17-temurin
 
 COPY webapps/waf /usr/local/tomcat/webapps/waf
 

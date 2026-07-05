@@ -4,14 +4,6 @@ This repository provides a complete, pre-configured environment for web hacking 
 
 The configuration has been specifically optimized for modern PHP versions and Docker networking to resolve common connection issues.
 
-> **Built primarily for Kali Linux**, but works just as well on other
-> native-Linux distros (**Ubuntu, Debian**, etc.) — the fixes target
-> native-Linux Docker behaviour (cgroup v2, bind-mount permissions, Burp
-> interception via static container IPs), not Kali specifically. Runs natively
-> on both **amd64** and **arm64** (Apple Silicon) — no emulation.
-> (macOS works too, but Docker Desktop's VM can't reach the static IPs — use
-> `localhost:8000` / `localhost:8081` there.)
-
 ---
 
 ## ⚠️ Important Notice
@@ -49,14 +41,9 @@ Follow these simple steps to get the entire lab environment running in minutes.
 ```bash
 git clone https://github.com/KhitMinnyo/sqli-labs.git
 cd sqli-labs
-chmod +x build.sh rebuild.sh
-
-./rebuild.sh    # clean build from scratch (wipes + re-seeds the DB)
+docker compose up -d --build
 ```
-
-Later, for a normal build/restart that keeps your DB data, use `./build.sh`.
-Both scripts use `sudo` (Docker needs root on Kali). Prefer raw commands?
-`sudo docker compose up -d --build`. Once the build finishes, your labs are ready.
+Once the build finishes, your labs are ready.
 
 ### Access URLs
 
@@ -64,10 +51,9 @@ Both scripts use `sudo` (Docker needs root on Kali). Prefer raw commands?
 |---|---|
 | Normal browsing | `http://localhost:8000` |
 | Through Burp (static IP) | `http://172.30.0.10` |
-| Tomcat WAF labs (Less-29..32) | Linked from the main menu as **Page-5** — or direct: `http://172.30.0.20:8080/waf/` / `http://localhost:8081/waf/` |
+| Tomcat WAF labs (Less-29..32) | `http://172.30.0.20:8080` or `http://localhost:8081` |
 
 > Runs natively on both **amd64** and **arm64** (Apple Silicon) — no emulation.
-> The WAF lessons are reachable straight from the menu, so no manual URL needed.
 
 ### Database Initialization
 
@@ -97,8 +83,5 @@ The database credentials are set for easy lab access. You can view or modify the
 To stop the containers and remove all associated network/volumes (including all database data), run:
 
 ```bash
-sudo docker compose down -v
+docker compose down -v
 ```
-
-To start completely fresh (also removes built images and re-seeds the DB), run
-`./rebuild.sh`.

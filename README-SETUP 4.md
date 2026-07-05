@@ -3,12 +3,6 @@
 Audi-1's SQLi-Labs, ported to PHP 8.2 and packaged with Docker, fixed to run
 on Kali Linux and to let Burp intercept all lab traffic.
 
-> **Primary target: Kali Linux**, but it runs equally well on other
-> native-Linux distros (**Ubuntu, Debian**, etc.) — the fixes target
-> native-Linux Docker behaviour (cgroup v2, bind-mount permissions), not Kali
-> specifically. Runs natively on both **amd64** and **arm64** (Apple Silicon) —
-> no emulation.
-
 ---
 
 ## 1. What was fixed
@@ -48,64 +42,34 @@ on Kali Linux and to let Burp intercept all lab traffic.
 8. **`setup-db.php` now returns Home** after seeding the DB (Home button +
    auto-redirect to the main menu).
 
-9. **Auto-fixed bind-mount permissions (native Linux / Kali).**
-   The lessons write `result.txt` into each lesson dir on every request. On a
-   native-Linux bind mount the webroot is owned by the host user (uid 1000),
-   which Apache's `www-data` cannot write, so a failed `fopen()` made PHP 8's
-   `fwrite()` fatal and pages showed no data (worked on Mac, not on Kali). A
-   startup entrypoint (`labs-entrypoint.sh`) now remaps `www-data` to the
-   mount owner automatically — no manual `chmod` needed.
-
-10. **Fixed the Tomcat WAF crash loop.**
-    The old `tomcat:9.0-jdk11-openjdk` image bundled a JDK with a cgroup-v2 bug
-    that throws `NullPointerException` on modern Linux (Kali uses cgroup v2), so
-    Tomcat never started. Base image upgraded to `tomcat:9.0-jdk17-temurin`
-    (has the fix, multi-arch).
-
-11. **WAF lessons linked from the main menu.**
-    Less-29..32 now appear as a **Page-5 (WAF Bypass - Tomcat)** section on the
-    main menu, so there is no need to type the Tomcat URL by hand.
-
 ---
 
 ## 2. Running
 
-On Kali, Docker needs root, so the helper scripts (and the commands below) use
-`sudo`.
-
 ```bash
 cd sqli-labs
-chmod +x build.sh rebuild.sh   # once
 
-./rebuild.sh   # full clean rebuild (wipes + re-seeds the DB)
-./build.sh     # day-to-day build/restart (keeps DB data)
-```
+# clean up any old containers/network first
+docker compose down -v
 
-Prefer raw commands? The scripts run:
-
-```bash
-# rebuild.sh
-sudo docker compose down -v --rmi all --remove-orphans
-sudo docker compose up -d --build
-
-# build.sh
-sudo docker compose up -d --build
+# build + start everything in one command
+docker compose up -d --build
 
 # watch logs (check that db becomes healthy)
-sudo docker compose logs -f
+docker compose logs -f
 ```
 
-The database is **seeded automatically on first boot** from
-`sql-connections/sql-config/`. To reset it manually at any time, visit
-`http://172.30.0.10/sql-connections/setup-db.php` (redirects back to the menu).
-Challenge lessons (Less-54..65) set themselves up on first visit.
+On first run, seed the database once by visiting:
+`http://localhost:8000/sql-connections/setup-db.php`
+(it redirects back to the main menu when done). Challenge lessons
+(Less-54..65) set themselves up automatically on first visit.
 
 ### Access URLs
 | Purpose | URL |
 |---|---|
 | Normal browsing | `http://localhost:8000` |
 | **Through Burp (static IP)** | `http://172.30.0.10` |
-| Tomcat WAF lessons (Less-29..32) | Click **Page-5** on the menu — or `http://172.30.0.20:8080/waf/` (Burp) / `http://localhost:8081/waf/` (direct) |
+| Tomcat WAF lessons (Less-29..32) | `http://172.30.0.20:8080` or `http://localhost:8081` |
 
 ---
 
@@ -143,11 +107,6 @@ dedicated `172.30.0.0/24` network and gives the web container the static IP
   or stop the conflicting service (`sudo ss -ltnp | grep :80`).
 - **Can't reach `172.30.0.10`** — the subnet may clash with a host network.
   Change it (e.g. `172.31.0.0/24`) in the compose file and adjust the IPs.
-- **DB errors / missing tables** — run `./rebuild.sh` to clear the volume and
-  re-seed (init scripts only run on the first boot).
-- **WAF page keeps restarting** — make sure the Tomcat base image is
-  `tomcat:9.0-jdk17-temurin` (the old jdk11-openjdk image crash-loops on
-  cgroup-v2 hosts); then `./rebuild.sh`.
-- **Lesson shows no login/password** — permissions; `labs-entrypoint.sh` fixes
-  this at container start. Rebuild with `./rebuild.sh` if you changed the image.
+- **DB errors / missing tables** — run `docker compose down -v` to clear the
+  volume, then `up` again (init scripts only run on the first boot).
 - **Subnet overlap** — inspect with `docker network ls` / `docker network inspect`.

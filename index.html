@@ -31,7 +31,23 @@
 <a href="sql-connections/setup-db.php"><font color="#E4287C">Setup/reset Database for labs</font></a></br></br>
 <a href="index-1.html"><font color="##F535AA">Page-2  (Advanced Injections)</font></a><br><br>
 <a href="index-2.html"><font color="#008000">Page-3  (Stacked Injections)</font></a><br><br>
-<a href="index-3.html"><font color="#FF00FF">Page-4  (Challenges)</font></a>
+<a href="index-3.html"><font color="#FF00FF">Page-4  (Challenges)</font></a><br><br>
+
+<!-- =================================================================
+     WAF Bypass lessons (Less-29..32) run on the SEPARATE Tomcat service.
+     Tomcat proxies each request to the PHP labs (http://web/Less-XX)
+     after a ^\d+$ WAF check, so these links point at the Tomcat host.
+       - Through Burp (static IP) : http://172.30.0.20:8080/waf/...
+       - Direct on host           : http://localhost:8081/waf/...
+     ================================================================= -->
+<a href="http://172.30.0.20:8080/waf/"><font color="#00BFFF">Page-5  (WAF Bypass - Tomcat)</font></a><br><br>
+<font color="#00BFFF">
+&nbsp;&nbsp;
+<a href="http://172.30.0.20:8080/waf/Less-29/?id=1"><font color="#00BFFF">Less-29</font></a> - GET - WAF - Blind &nbsp;|&nbsp;
+<a href="http://172.30.0.20:8080/waf/Less-30/?id=1"><font color="#00BFFF">Less-30</font></a> - GET - WAF - Double quotes &nbsp;|&nbsp;
+<a href="http://172.30.0.20:8080/waf/Less-31/?id=1"><font color="#00BFFF">Less-31</font></a> - GET - WAF - Double quotes &nbsp;|&nbsp;
+<a href="http://172.30.0.20:8080/waf/Less-32/?id=1"><font color="#00BFFF">Less-32</font></a> - GET - WAF - Bypass (wide byte)
+</font>
 
 <div style="width:96%;  padding:2%;  margin-bottom:10px;  border: 0px;  text-align:center;  vertical-align:center;">
 <img src="index.html_files/image.png" style="margin-bottom:10px; &#9;border: 0px; &#9;text-align:center; &#9;vertical-align:center;" alt="Imagemap" usemap="#fm_imagemap"/>
