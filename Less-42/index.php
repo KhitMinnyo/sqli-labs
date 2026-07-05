@@ -15,6 +15,8 @@ include("../sql-connections/sqli-connect.php");
 <title>Less-42 - Stacked Query error based </title>
 </head>
 <body bgcolor="#000000">
+<a href="/" id="sqli-home-btn" title="Back to main labs menu" style="position:fixed;top:12px;left:12px;z-index:99999;background:#FF0000;color:#fff;font:bold 14px Arial,sans-serif;text-decoration:none;padding:8px 14px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.4);">&#8962; Home</a>
+
 
 <div style="text-align:center">
 <form name="login" method="POST" action="login.php">

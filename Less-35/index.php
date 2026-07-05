@@ -6,6 +6,8 @@
 </head>
 
 <body bgcolor="#000000">
+<a href="/" id="sqli-home-btn" title="Back to main labs menu" style="position:fixed;top:12px;left:12px;z-index:99999;background:#FF0000;color:#fff;font:bold 14px Arial,sans-serif;text-decoration:none;padding:8px 14px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.4);">&#8962; Home</a>
+
 <div style=" margin-top:70px;color:#FFF; font-size:23px; text-align:center">Welcome&nbsp;&nbsp;&nbsp;<font color="#FF0000"> Dhakkan </font><br>
 <font size="5" color="#00FF00">
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <title> WAF Bypassing Lab </title>
-  <link rel="shortcut icon" type="text/css" href="http://localhost/favicon.png" />
+  <link rel="shortcut icon" type="text/css" href="/img/favicon.png" />
 <style type="text/css">
 
 body {
@@ -48,20 +48,20 @@ li:hover {
 <h1 align="center"> Welcome to AiO's WAF Labs </h1>
 <ul align="center">
   <li>
-    <a href="http://localhost:8080/waf/Less-29/"> <h3> **** WAF Bypass Lesson 1 *** (SQLi Labs Lesson 29) </h3></a>
+    <a href="http://172.30.0.20:8080/waf/Less-29/"> <h3> **** WAF Bypass Lesson 1 *** (SQLi Labs Lesson 29) </h3></a>
   </li>
   <li>
-    <a href="http://localhost:8080/waf/Less-30/"> <h3> **** WAF Bypass Lesson 2 *** (SQLi Labs Lesson 30) </h3></a>
+    <a href="http://172.30.0.20:8080/waf/Less-30/"> <h3> **** WAF Bypass Lesson 2 *** (SQLi Labs Lesson 30) </h3></a>
   </li>
   <li>
-    <a href="http://localhost:8080/waf/Less-31/"> <h3> **** WAF Bypass Lesson 3 *** (SQLi Labs Lesson 31) </h3></a>
+    <a href="http://172.30.0.20:8080/waf/Less-31/"> <h3> **** WAF Bypass Lesson 3 *** (SQLi Labs Lesson 31) </h3></a>
   </li>
   <li>
-    <a href="http://localhost:8080/waf/Less-32/"> <h3> **** WAF Bypass Lesson 4 *** (SQLi Labs Lesson 32) </h3></a>
+    <a href="http://172.30.0.20:8080/waf/Less-32/"> <h3> **** WAF Bypass Lesson 4 *** (SQLi Labs Lesson 32) </h3></a>
   </li>
 
 </ul>
 <h3 align="center"> Choose your lessons. Thanks. </h3>
-<center><img src="http://localhost/img/aio.png" width="150" height="110"></center>
+<center><img src="/img/aio.png" width="150" height="110"></center>
 </body>
 </html> 

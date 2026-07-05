@@ -1,4 +1,18 @@
-version: '3.7'
+# =====================================================================
+#  SQLi-Labs (Audi-1) — newer PHP / Docker build
+#  Fixed for Kali Linux + dedicated static IP for Burp interception
+# =====================================================================
+#
+#  Bring up:  docker compose up -d --build
+#
+#  Access:
+#    - Normal browsing        : http://localhost:8000
+#    - Through Burp (static IP): http://172.30.0.10        (PHP Less pages)
+#    - Tomcat WAF lessons      : http://172.30.0.20:8080  or http://localhost:8081
+#
+#  Burp's default proxy listener is 127.0.0.1:8080, so Tomcat is moved
+#  off host port 8080 to avoid a clash.
+# =====================================================================
 
 services:
   # ----------------------------------
@@ -7,6 +21,9 @@ services:
   db:
     image: mariadb:10.4
     container_name: sqli-db
+    restart: unless-stopped
+    # platform pin removed: an amd64 pin on an arm64 Kali host silently
+    # fails to start, which then hangs the web container forever.
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: security
@@ -14,29 +31,64 @@ services:
       MYSQL_PASSWORD: toor
     volumes:
       - ./sql-connections/sql-config/:/docker-entrypoint-initdb.d/
-    platform: linux/amd64
+    networks:
+      sqli-net:
+        ipv4_address: 172.30.0.2
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
 
   # ----------------------------------
   # 2. Web Server Service (Apache/PHP)
   # ----------------------------------
   web:
-    build: . 
+    build: .
     container_name: sqli-web
+    restart: unless-stopped
     ports:
-      - "80:80"
+      # localhost convenience port (localhost bypasses Burp —
+      # use the static IP 172.30.0.10 when you want Burp to catch it)
+      - "8000:80"
     volumes:
       - .:/var/www/html/
     depends_on:
-      - db
-    command: ["/bin/bash", "-c", "while ! timeout 1 bash -c 'cat < /dev/null > /dev/tcp/db/3306'; do echo waiting for db; sleep 2; done; apache2-foreground"]
+      db:
+        condition: service_healthy
+    networks:
+      sqli-net:
+        ipv4_address: 172.30.0.10
 
-
+  # ----------------------------------
+  # 3. Tomcat WAF Service (Less-29..32)
+  # ----------------------------------
   tomcat:
     build:
-      context: ./tomcat-waf 
-      dockerfile: Dockerfile.tomcat 
+      context: ./tomcat-waf
+      dockerfile: Dockerfile.tomcat
     container_name: waf-tomcat
+    restart: unless-stopped
     ports:
-      - "8080:8080" 
+      # moved off 8080 so it does not collide with Burp's proxy listener
+      - "8081:8080"
     depends_on:
       - db
+    networks:
+      sqli-net:
+        ipv4_address: 172.30.0.20
+
+# ----------------------------------
+# Dedicated bridge network (same class-C subnet)
+# On Linux/Kali these IPs are reachable directly from the host, so
+# browsing http://172.30.0.10 routes through Burp instead of being
+# bypassed the way localhost / 127.0.0.1 is.
+# ----------------------------------
+networks:
+  sqli-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1

@@ -6,6 +6,8 @@
 </head>
 
 <body bgcolor="#000000">
+<a href="/" id="sqli-home-btn" title="Back to main labs menu" style="position:fixed;top:12px;left:12px;z-index:99999;background:#FF0000;color:#fff;font:bold 14px Arial,sans-serif;text-decoration:none;padding:8px 14px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.4);">&#8962; Home</a>
+
 
 <div style=" margin-top:20px;color:#FFF; font-size:24px; text-align:center"><font color="#FFFF00"> [PASSWORD RESET] </br></font>&nbsp;&nbsp;<font color="#FF0000"> Dhakkan </font><br></div>
 
@@ -46,7 +48,7 @@ function check_input($con1, $value)
 	}
 
 	// Stripslashes if magic quotes enabled
-	if (get_magic_quotes_gpc())
+	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())
 	{
 		$value = stripslashes($value);
 	}

@@ -136,6 +136,23 @@ $sql="INSERT INTO `security`.`emails` (id, email_id) VALUES ('1', 'Dumb@dhakkan.
 include("../sql-connections/setup-db-challenge.php");
 ?>
 
+<br><br>
+<div style="text-align:center; margin-top:20px;">
+	<a href="/" style="display:inline-block;background:#FF0000;color:#fff;font:bold 18px Arial,sans-serif;text-decoration:none;padding:12px 26px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.4);">&#8962; Go to Home (Main Menu)</a>
+	<div style="color:#00FF00; font:14px Arial,sans-serif; margin-top:12px;">
+		Database setup complete. Redirecting to the main menu in <span id="cd">6</span>s&hellip;
+	</div>
+</div>
+<script>
+(function(){
+	var n = 6, el = document.getElementById('cd');
+	var t = setInterval(function(){
+		n--;
+		if (el) el.textContent = n;
+		if (n <= 0){ clearInterval(t); window.location.href = '/'; }
+	}, 1000);
+})();
+</script>
 
 </font>
 </div>

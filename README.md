@@ -29,7 +29,7 @@ To run this project, you need the following software installed on your machine:
 
 1.  **Git:** For cloning the repository.
 2.  **Docker Desktop / Docker Engine:** (Required for macOS, Windows, or Linux).
-3.  **Docker Compose:** (Usually bundled with Docker Desktop, or installable via `apt install docker-compose` on Linux).
+3.  **Docker Compose v2:** (Bundled with Docker Desktop, or install the plugin via `apt install docker-compose-plugin` on Linux — invoked as `docker compose`).
 
 ---
 
@@ -41,20 +41,37 @@ Follow these simple steps to get the entire lab environment running in minutes.
 ```bash
 git clone https://github.com/KhitMinnyo/sqli-labs.git
 cd sqli-labs
-docker-compose up -d --build 
+docker compose up -d --build
 ```
-Once docker-compose up is finished, your labs are ready. You can access it on http://localhost/ . 
+Once the build finishes, your labs are ready.
+
+### Access URLs
+
+| Purpose | URL |
+|---|---|
+| Normal browsing | `http://localhost:8000` |
+| Through Burp (static IP) | `http://172.30.0.10` |
+| Tomcat WAF labs (Less-29..32) | `http://172.30.0.20:8080` or `http://localhost:8081` |
+
+> Runs natively on both **amd64** and **arm64** (Apple Silicon) — no emulation.
 
 ### Database Initialization
 
-When you first access the SQLi Labs page (`http://localhost`), you must initialize the database before starting any lessons.
+The database is **initialized automatically on first boot** (schema, data, the
+`challenges` DB and user grants are loaded from `sql-connections/sql-config/`),
+so you can start the lessons right away.
 
-**Action Required:**
+To **reset** the database at any time, open
+`http://localhost:8000/sql-connections/setup-db.php`
+(it re-seeds everything, then returns you to the main menu).
 
-1.  Navigate to the main lab page (`http://localhost`).
-2.  Click the **"Setup / reset database"** link in the menu.
+### Intercepting with Burp
 
-This step creates the necessary tables and populates them with user data, fully preparing the labs for use.
+Browsers bypass the proxy for `localhost`/`127.0.0.1`, so Burp never sees that
+traffic. Browse the lab via its dedicated IP **`http://172.30.0.10`** instead —
+on Linux the Docker bridge IP is reachable directly and routes through Burp.
+Set Firefox's proxy to `127.0.0.1:8080` and clear `localhost, 127.0.0.1` from
+the "No proxy for" list. Full details are in `README-SETUP.md`.
 
 
 ## Notice
@@ -66,5 +83,5 @@ The database credentials are set for easy lab access. You can view or modify the
 To stop the containers and remove all associated network/volumes (including all database data), run:
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
