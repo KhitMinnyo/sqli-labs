@@ -4,7 +4,8 @@ RUN apt-get update && \
     apt-get install -y \
     mariadb-client \
     libxml2-dev \
-    && docker-php-ext-install mysqli 
+    passwd \
+    && docker-php-ext-install mysqli
 
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-display-errors.ini && \
     echo "date.timezone = Asia/Yangon" >> /usr/local/etc/php/conf.d/timezone.ini
@@ -31,3 +32,14 @@ RUN echo "opcache.enable=0" >> /usr/local/etc/php/conf.d/labs-opcache.ini && \
 RUN a2enmod rewrite
 
 RUN rm -rf /var/www/html/*
+
+# On native-Linux bind mounts the webroot is owned by the host user (often
+# uid 1000), which Apache's www-data (uid 33) cannot write. The labs write
+# result.txt into each lesson dir on every request, so a failed fopen() makes
+# PHP 8's fwrite() fatal and the page shows no data. This entrypoint remaps
+# www-data to the mount owner at startup so Apache can write. Fully automatic:
+# users only need `docker compose up -d --build`, no manual chmod.
+COPY labs-entrypoint.sh /usr/local/bin/labs-entrypoint.sh
+RUN chmod +x /usr/local/bin/labs-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/labs-entrypoint.sh"]
+CMD ["apache2-foreground"]
